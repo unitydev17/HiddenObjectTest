@@ -3,9 +3,7 @@ using System.IO;
 using System.Threading;
 using Code.Utils;
 using Cysharp.Threading.Tasks;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering;
 using UnityEngine.Networking;
 
 namespace Code.Services
@@ -37,16 +35,11 @@ namespace Code.Services
 
             // check for cached textures
 
-            var cachePath = Path.Combine(Application.persistentDataPath, Path.GetFileName(url));
-            if (File.Exists(cachePath))
+            var path = Path.Combine(Application.persistentDataPath, Path.GetFileName(url));
+            if (IsExistInCache(path))
             {
                 Debug.Log("RemoteContentService.LoadRemoteTexture(): return cached texture");
-
-                var bytes = File.ReadAllBytes(cachePath);
-                var texture = new Texture2D(2,2);
-                texture.LoadImage(bytes);
-                texture.Apply();
-                return texture;
+                return LoadFromCache(path);
             }
 
             // load remotely
@@ -55,20 +48,32 @@ namespace Code.Services
             request.timeout = Timeout;
 
             var asyncOperation = await request.SendWebRequest().WithCancellation(cancellation);
-            if (asyncOperation.result == UnityWebRequest.Result.Success)
+            if (asyncOperation.result != UnityWebRequest.Result.Success) throw new Exception(request.error);
             {
                 Debug.Log("RemoteContentService.LoadRemoteTexture(): downloaded texture");
-
-                var texture = DownloadHandlerTexture.GetContent(request);
-
-                // save to cache
-                var bytes = request.downloadHandler.data;
-                File.WriteAllBytes(cachePath, bytes);
-
-                return texture;
+                CacheTexture(request, path);
+                return LoadFromCache(path);
             }
+        }
 
-            throw new Exception(request.error);
+        private static bool IsExistInCache(string cachePath)
+        {
+            return File.Exists(cachePath);
+        }
+
+        private static Texture2D LoadFromCache(string cachePath)
+        {
+            var bytes = File.ReadAllBytes(cachePath);
+            var texture = new Texture2D(2, 2);
+            texture.LoadImage(bytes);
+            texture.Apply();
+            return texture;
+        }
+
+        private static void CacheTexture(UnityWebRequest request, string cachePath)
+        {
+            var bytes = request.downloadHandler.data;
+            File.WriteAllBytes(cachePath, bytes);
         }
     }
 }
