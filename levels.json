@@ -1,0 +1,22 @@
+{
+  "levels": [
+    {
+      "id": 1,
+      "imageUrl": "localhost/test/hidden_object_game_screen_1.jpeg",
+      "imageName": "level 1",
+      "counter": 10
+    },
+    {
+      "id": 2,
+      "imageUrl": "localhost/test/hidden_object_game_screen_2.jpeg",
+      "imageName": "level 2",
+      "counter": 8
+    },
+    {
+      "id": 3,
+      "imageUrl": "localhost/test/hidden_object_game_screen_3.jpeg",
+      "imageName": "level 4",
+      "counter": 12
+    }
+  ]
+}
