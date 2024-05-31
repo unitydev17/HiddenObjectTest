@@ -1,7 +1,8 @@
+using Code;
 using Code.EntryPoint;
 using Code.Services;
 using Code.SO;
-using Code.UI;
+using Code.UI.Popups;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -16,19 +17,15 @@ public class GameLifetimeScope : LifetimeScope
         RegisterEntryPoint(builder);
         RegisterScriptableObjects(builder);
         RegisterServices(builder);
-        // RegisterPrefabs(builder);
         RegisterFactories(builder);
+
+        builder.Register<GameData>(Lifetime.Singleton);
     }
 
     private void RegisterFactories(IContainerBuilder builder)
     {
         builder.Register<PopupFactory>(Lifetime.Scoped).WithParameter(typeof(Popup), _popupPrefab);
     }
-
-    // private void RegisterPrefabs(IContainerBuilder builder)
-    // {
-    //     builder.RegisterComponentInNewPrefab(_errorPopup, Lifetime.Singleton);
-    // }
 
     private static void RegisterServices(IContainerBuilder builder)
     {

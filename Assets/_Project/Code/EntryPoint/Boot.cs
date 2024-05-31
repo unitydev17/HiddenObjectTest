@@ -3,9 +3,11 @@ using System.Threading;
 using Code.Services;
 using Code.SO;
 using Code.UI;
+using Code.UI.Popups;
 using Code.Utils;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using VContainer.Unity;
 
 namespace Code.EntryPoint
@@ -15,12 +17,14 @@ namespace Code.EntryPoint
         private readonly IRemoteContentService _remoteContentService;
         private readonly PopupFactory _popupFactory;
         private readonly Config _cfg;
+        private readonly GameData _gameData;
 
-        public Boot(Config cfg, IRemoteContentService remoteContentService, PopupFactory popupFactory)
+        public Boot(Config cfg, IRemoteContentService remoteContentService, PopupFactory popupFactory, GameData gameData)
         {
             _cfg = cfg;
             _remoteContentService = remoteContentService;
             _popupFactory = popupFactory;
+            _gameData = gameData;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation)
@@ -36,7 +40,9 @@ namespace Code.EntryPoint
             try
             {
                 var remoteCfg = await _remoteContentService.LoadRemoteConfig(_cfg.configUrl, cancellation);
-                
+                _gameData.remoteConfig = remoteCfg;
+
+                await SceneManager.LoadSceneAsync(Constants.MenuScene);
             }
             catch (Exception e)
             {

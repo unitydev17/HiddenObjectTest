@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 848dadc325b34884973a89880264ee55, type: 3}
   m_Name: Config
   m_EditorClassIdentifier: 
-  configUrl: https://localhost/test/levels.json
+  configUrl: https://unitydev17.github.io/test/levels.json
