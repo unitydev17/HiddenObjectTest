@@ -14,6 +14,7 @@ using VContainer.Unity;
 
 public class GamePlay : MonoBehaviour, IPointerClickHandler, IInitializable, IDisposable
 {
+    [SerializeField] private Bounce _bounce;
     [SerializeField] private Button _backButton;
     [SerializeField] private TMP_Text _progress;
     [SerializeField] private RawImage _image;
@@ -75,6 +76,8 @@ public class GamePlay : MonoBehaviour, IPointerClickHandler, IInitializable, IDi
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        _bounce.Run(eventData.position);
+
         _progressService.IncreaseCounter(_level);
 
         var (progress, completed) = _progressService.GetProgress(_level);

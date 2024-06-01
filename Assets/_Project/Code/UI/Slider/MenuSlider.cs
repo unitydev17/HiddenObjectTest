@@ -26,11 +26,6 @@ namespace Code.UI.Slider
             _progressService = progressService;
         }
 
-        private void OnDestroy()
-        {
-            _cts?.Cancel();
-        }
-
         private void OnEnable()
         {
             SliderItem.OnSelectLevel += SelectLevel;
@@ -39,6 +34,7 @@ namespace Code.UI.Slider
         private void OnDisable()
         {
             SliderItem.OnSelectLevel -= SelectLevel;
+            _cts?.Cancel();
         }
 
         private void SelectLevel(int id, bool completed)

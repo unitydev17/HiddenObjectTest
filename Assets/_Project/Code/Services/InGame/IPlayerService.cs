@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Code.Services
 {
-    public interface IPlayerDataService
+    public interface IPlayerService
     {
         public Dictionary<int, int> GetLevelStates();
         int GetLevelId();

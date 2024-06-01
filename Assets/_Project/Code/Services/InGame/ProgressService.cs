@@ -2,24 +2,24 @@ namespace Code.Services
 {
     public class ProgressService : IProgressService
     {
-        private readonly IPlayerDataService _playerDataService;
+        private readonly IPlayerService _playerService;
 
-        public ProgressService(IPlayerDataService playerDataService)
+        public ProgressService(IPlayerService playerService)
         {
-            _playerDataService = playerDataService;
+            _playerService = playerService;
         }
 
-        public int GetCounter(Level level)
+        private int GetCounter(Level level)
         {
             var id = level.id;
-            if (!_playerDataService.GetLevelStates().ContainsKey(id)) _playerDataService.AddCounter(id, 0);
+            if (!_playerService.GetLevelStates().ContainsKey(id)) _playerService.AddCounter(id, 0);
 
-            return _playerDataService.GetCounter(id);
+            return _playerService.GetCounter(id);
         }
 
         public void IncreaseCounter(Level level)
         {
-            _playerDataService.IncreaseCounter(level.id);
+            _playerService.IncreaseCounter(level.id);
         }
 
         public (int, bool) GetProgress(Level level)
@@ -30,7 +30,7 @@ namespace Code.Services
 
         public void ResetProgress(Level level)
         {
-            _playerDataService.ResetProgress(level.id);
+            _playerService.ResetProgress(level.id);
         }
     }
 }

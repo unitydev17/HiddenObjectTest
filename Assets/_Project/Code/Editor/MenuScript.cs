@@ -12,7 +12,7 @@ namespace Code.Editor
         private const string SplashScene = "Assets/_Project/Scenes/Splash.unity";
         private const string MenuScene = "Assets/_Project/Scenes/Menu.unity";
         private const string GamePlayScene = "Assets/_Project/Scenes/GamePlay.unity";
-        
+
 #if UNITY_EDITOR
         [MenuItem("Scenes/Splash - RUN #_1")]
         public static void SplashSceneRun()

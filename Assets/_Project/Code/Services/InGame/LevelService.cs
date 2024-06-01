@@ -6,22 +6,22 @@ namespace Code.Services
     public class LevelService : ILevelService
     {
         private readonly GameData _gameData;
-        private readonly IPlayerDataService _playerDataService;
+        private readonly IPlayerService _playerService;
 
-        public LevelService(GameData gameData, IPlayerDataService playerDataService)
+        public LevelService(GameData gameData, IPlayerService playerService)
         {
             _gameData = gameData;
-            _playerDataService = playerDataService;
+            _playerService = playerService;
         }
 
         public Level GetCurrLevel()
         {
-            return _gameData.remoteConfig.levels.First(level => level.id == _playerDataService.GetLevelId());
+            return _gameData.remoteConfig.levels.First(level => level.id == _playerService.GetLevelId());
         }
 
         public void SetCurrentLevel(int id)
         {
-            _playerDataService.SetLevelId(id);
+            _playerService.SetLevelId(id);
         }
 
         public IEnumerable<Level> GetLevels()

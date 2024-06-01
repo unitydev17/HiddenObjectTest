@@ -38,7 +38,7 @@ public class AppLifetimeScope : LifetimeScope
     {
         builder.Register<IRemoteContentService, RemoteContentService>(Lifetime.Scoped);
         builder.Register<ICacheService, CacheService>(Lifetime.Scoped);
-        builder.Register<IPlayerDataService, PlayerDataService>(Lifetime.Scoped);
+        builder.Register<IPlayerService, PlayerService>(Lifetime.Scoped);
         builder.Register<IPersistenceService, PersistenceService>(Lifetime.Scoped);
         builder.Register<IProgressService, ProgressService>(Lifetime.Scoped);
         builder.Register<ILevelService, LevelService>(Lifetime.Scoped);

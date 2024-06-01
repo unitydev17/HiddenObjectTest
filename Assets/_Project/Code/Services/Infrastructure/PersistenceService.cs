@@ -6,16 +6,16 @@ namespace Code.Services
 {
     public class PersistenceService : IPersistenceService
     {
-        private readonly IPlayerDataService _playerDataService;
+        private readonly IPlayerService _playerService;
 
-        public PersistenceService(IPlayerDataService playerDataService)
+        public PersistenceService(IPlayerService playerService)
         {
-            _playerDataService = playerDataService;
+            _playerService = playerService;
         }
 
         public void SavePlayerData()
         {
-            var playerData = _playerDataService.GetData();
+            var playerData = _playerService.GetData();
             var data = JsonConvert.SerializeObject(playerData);
 
             PlayerPrefs.SetString(nameof(PlayerData), data);
@@ -30,18 +30,18 @@ namespace Code.Services
             const string key = nameof(PlayerData);
             if (!PlayerPrefs.HasKey(key))
             {
-                Debug.Log($"key not exists");
+                Debug.Log("key not exists");
                 return;
             }
 
             var data = PlayerPrefs.GetString(key);
             if (data.IsNullOrWhiteSpace())
             {
-                Debug.Log($"data empty");
+                Debug.Log("data empty");
                 return;
             }
 
-            _playerDataService.SetPlayerData(JsonConvert.DeserializeObject<PlayerData>(data));
+            _playerService.SetPlayerData(JsonConvert.DeserializeObject<PlayerData>(data));
             Debug.Log($"data: {data}");
         }
     }

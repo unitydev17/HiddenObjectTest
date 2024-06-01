@@ -34,7 +34,7 @@ namespace Code.EntryPoint
         {
             Debug.Log("Boot.Start()");
 
-            if (HasNoInternet()) return;
+            if (HasNoInternet(cancellation)) return;
 
             _persistenceService.LoadPlayerData();
 
@@ -53,18 +53,23 @@ namespace Code.EntryPoint
             }
             catch (Exception e)
             {
-                _popupFactory.Create(Constants.DownloadGameConfigError);
+                _popupFactory.Create(Constants.DownloadGameConfigError, Retry(cancellation));
                 Debug.Log(e.Message);
             }
 
             return false;
         }
 
-        private bool HasNoInternet()
+        private bool HasNoInternet(CancellationToken cancellation)
         {
             if (Application.internetReachability != NetworkReachability.NotReachable) return false;
-            _popupFactory.Create(Constants.InternetNotAvailable);
+            _popupFactory.Create(Constants.InternetNotAvailable, Retry(cancellation));
             return true;
+        }
+
+        private Action Retry(CancellationToken cancellation)
+        {
+            return async () => await StartAsync(cancellation);
         }
     }
 }

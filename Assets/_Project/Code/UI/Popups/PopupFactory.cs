@@ -1,3 +1,4 @@
+using System;
 using VContainer;
 using VContainer.Unity;
 
@@ -19,10 +20,11 @@ namespace Code.UI.Popups
             return _resolver.Instantiate(_prefab.gameObject).GetComponent<Popup>();
         }
 
-        public void Create(string message)
+        public void Create(string message, Action callback = null)
         {
             var popup = Create();
             popup.SetMessage(message);
+            popup.SetCallback(callback);
             popup.gameObject.SetActive(true);
         }
     }

@@ -2,11 +2,11 @@ using System.Collections.Generic;
 
 namespace Code.Services
 {
-    public class PlayerDataService : IPlayerDataService
+    public class PlayerService : IPlayerService
     {
         private readonly PlayerData _playerData;
 
-        public PlayerDataService(PlayerData playerData)
+        public PlayerService(PlayerData playerData)
         {
             _playerData = playerData;
         }
