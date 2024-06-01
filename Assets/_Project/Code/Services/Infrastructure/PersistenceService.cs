@@ -1,20 +1,22 @@
 using Code.Utils;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Code.Services
 {
     public class PersistenceService : IPersistenceService
     {
-        private PlayerData _playerData;
+        private readonly IPlayerDataService _playerDataService;
 
-        public PersistenceService(PlayerData playerData)
+        public PersistenceService(IPlayerDataService playerDataService)
         {
-            _playerData = playerData;
+            _playerDataService = playerDataService;
         }
 
         public void SavePlayerData()
         {
-            var data = JsonUtility.ToJson(_playerData);
+            var playerData = _playerDataService.GetData();
+            var data = JsonConvert.SerializeObject(playerData);
 
             PlayerPrefs.SetString(nameof(PlayerData), data);
             PlayerPrefs.Save();
@@ -39,7 +41,7 @@ namespace Code.Services
                 return;
             }
 
-            _playerData = JsonUtility.FromJson<PlayerData>(data);
+            _playerDataService.SetPlayerData(JsonConvert.DeserializeObject<PlayerData>(data));
             Debug.Log($"data: {data}");
         }
     }

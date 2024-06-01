@@ -8,17 +8,19 @@ using VContainer.Unity;
 
 namespace Code.UI.Slider
 {
-    public class SliderItemFactory : IDisposable
+    public class SliderItemFactory
     {
         private readonly IObjectResolver _resolver;
         private readonly SliderItem _prefab;
         private readonly IRemoteContentService _remoteContentService;
+        private readonly IProgressService _progressService;
 
-        public SliderItemFactory(IObjectResolver resolver, SliderItem prefab, IRemoteContentService remoteContentService)
+        public SliderItemFactory(IObjectResolver resolver, SliderItem prefab, IRemoteContentService remoteContentService, IProgressService progressService)
         {
             _resolver = resolver;
             _prefab = prefab;
             _remoteContentService = remoteContentService;
+            _progressService = progressService;
         }
 
         private SliderItem Create()
@@ -31,9 +33,10 @@ namespace Code.UI.Slider
             var item = Create();
             item.SetId(level.id);
             item.SetName(level.imageName);
-            item.SetProgress(level.counter.ToString());
-            item.SetCompleted(false);
-            item.SetState(SliderItem.State.Loading);
+
+            var (progress, completed) = _progressService.GetProgress(level);
+            item.SetProgress(completed ? string.Empty : progress.ToString());
+            item.SetState(completed ? SliderItem.State.Completed : SliderItem.State.Loading);
 
             LoadTexture(level, cancelToken, item).Forget();
 
@@ -50,13 +53,8 @@ namespace Code.UI.Slider
             catch (Exception e)
             {
                 Debug.Log(e.Message);
-                item.SetState(SliderItem.State.Unavailable);
+                if (item) item.SetState(SliderItem.State.Unavailable);
             }
-        }
-
-        public void Dispose()
-        {
-            _resolver?.Dispose();
         }
     }
 }

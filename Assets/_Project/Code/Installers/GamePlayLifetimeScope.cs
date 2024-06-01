@@ -5,6 +5,6 @@ public class GamePlayLifetimeScope : LifetimeScope
 {
     protected override void Configure(IContainerBuilder builder)
     {
-        builder.RegisterComponentInHierarchy<GamePlay>();
+        builder.RegisterComponentInHierarchy<GamePlay>().AsImplementedInterfaces().AsSelf();
     }
 }

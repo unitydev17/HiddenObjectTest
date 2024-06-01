@@ -615,7 +615,7 @@ GameObject:
   - component: {fileID: 733934073}
   - component: {fileID: 733934072}
   m_Layer: 0
-  m_Name: GameplayeLifetimeScope
+  m_Name: GamePlayeLifetimeScope
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -634,7 +634,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parentReference:
-    TypeName: GameLifetimeScope
+    TypeName: AppLifetimeScope
   autoRun: 1
   autoInjectGameObjects: []
 --- !u!4 &733934073

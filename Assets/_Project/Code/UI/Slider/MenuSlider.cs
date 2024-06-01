@@ -1,4 +1,6 @@
+using System.Linq;
 using System.Threading;
+using Code.Services;
 using Code.Utils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,18 +12,18 @@ namespace Code.UI.Slider
     {
         [SerializeField] private Transform _content;
 
-        private GameData _gameData;
         private SliderItemFactory _itemFactory;
+        private ILevelService _levelService;
         private CancellationTokenSource _cts;
-        private PlayerData _playerData;
+        private IProgressService _progressService;
 
 
         [Inject]
-        public void Construct(GameData gameData, PlayerData playerData, SliderItemFactory itemFactory)
+        public void Construct(SliderItemFactory itemFactory, ILevelService levelService, IProgressService progressService)
         {
-            _gameData = gameData;
-            _playerData = playerData;
             _itemFactory = itemFactory;
+            _levelService = levelService;
+            _progressService = progressService;
         }
 
         private void OnDestroy()
@@ -39,9 +41,14 @@ namespace Code.UI.Slider
             SliderItem.OnSelectLevel -= SelectLevel;
         }
 
-        private void SelectLevel(int id)
+        private void SelectLevel(int id, bool completed)
         {
-            _playerData.currentId = id;
+            _cts.Cancel();
+
+            _levelService.SetCurrentLevel(id);
+            var level = _levelService.GetCurrLevel();
+            if (completed) _progressService.ResetProgress(level);
+
             SceneManager.LoadScene(Constants.GamePlayScene);
         }
 
@@ -56,9 +63,8 @@ namespace Code.UI.Slider
 
         private void CreateItems()
         {
-            foreach (var level in _gameData.remoteConfig.levels)
+            foreach (var item in _levelService.GetLevels().Select(level => _itemFactory.Create(level, _cts.Token)))
             {
-                var item = _itemFactory.Create(level, _cts.Token);
                 item.transform.SetParent(_content, false);
             }
         }

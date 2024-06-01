@@ -464,7 +464,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parentReference:
-    TypeName: GameLifetimeScope
+    TypeName: AppLifetimeScope
   autoRun: 1
   autoInjectGameObjects: []
   _itemPrefab: {fileID: 1506509543554157182, guid: 62967b3c089b04b4c9af8edb4eb8891a, type: 3}

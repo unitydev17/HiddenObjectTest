@@ -7,6 +7,6 @@ namespace Code
     {
         public Dictionary<int, int> levelStates = new Dictionary<int, int>();
 
-        [NonSerialized] public int currentId;
+        [NonSerialized] public int levelId;
     }
 }

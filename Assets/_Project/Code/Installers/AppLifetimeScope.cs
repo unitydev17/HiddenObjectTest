@@ -8,7 +8,7 @@ using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-public class GameLifetimeScope : LifetimeScope
+public class AppLifetimeScope : LifetimeScope
 {
     [SerializeField] private Config _cfg;
     [SerializeField] private Popup _popupPrefab;
@@ -20,14 +20,13 @@ public class GameLifetimeScope : LifetimeScope
         RegisterScriptableObjects(builder);
         RegisterServices(builder);
         RegisterFactories(builder);
-
-        builder.Register<GameData>(Lifetime.Singleton);
-        builder.Register<PlayerData>(Lifetime.Singleton);
+        RegisterDataObjects(builder);
     }
 
-    private void RegisterExitPoint(IContainerBuilder builder)
+    private static void RegisterDataObjects(IContainerBuilder builder)
     {
-        builder.RegisterComponentInHierarchy<PersistenceControl>();
+        builder.Register<GameData>(Lifetime.Singleton);
+        builder.Register<PlayerData>(Lifetime.Singleton);
     }
 
     private void RegisterFactories(IContainerBuilder builder)
@@ -39,7 +38,10 @@ public class GameLifetimeScope : LifetimeScope
     {
         builder.Register<IRemoteContentService, RemoteContentService>(Lifetime.Scoped);
         builder.Register<ICacheService, CacheService>(Lifetime.Scoped);
+        builder.Register<IPlayerDataService, PlayerDataService>(Lifetime.Scoped);
         builder.Register<IPersistenceService, PersistenceService>(Lifetime.Scoped);
+        builder.Register<IProgressService, ProgressService>(Lifetime.Scoped);
+        builder.Register<ILevelService, LevelService>(Lifetime.Scoped);
     }
 
     private void RegisterScriptableObjects(IContainerBuilder builder)
@@ -50,5 +52,10 @@ public class GameLifetimeScope : LifetimeScope
     private static void RegisterEntryPoint(IContainerBuilder builder)
     {
         builder.RegisterEntryPoint<Boot>();
+    }
+    
+    private static void RegisterExitPoint(IContainerBuilder builder)
+    {
+        builder.RegisterComponentInHierarchy<PersistenceControl>();
     }
 }

@@ -1,15 +1,14 @@
 using System;
-using Code.Utils;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Code.UI.Slider
 {
     public class SliderItem : MonoBehaviour
     {
-        public static event Action<int> OnSelectLevel;
+        public static event Action<int, bool> OnSelectLevel;
+
 
         public enum State
         {
@@ -33,28 +32,25 @@ namespace Code.UI.Slider
 
         private void UpdateState()
         {
+            _completed.SetActive(false);
+            _loading.SetActive(false);
+            _loaded.SetActive(false);
+            _unavailable.SetActive(false);
+
             switch (_state)
             {
                 case State.Loading:
                     _loading.SetActive(true);
-                    _loaded.SetActive(false);
-                    _unavailable.SetActive(false);
                     break;
                 case State.Unavailable:
-                    _loading.SetActive(false);
-                    _loaded.SetActive(false);
                     _unavailable.SetActive(true);
                     break;
                 case State.Loaded:
-                    _loading.SetActive(false);
                     _loaded.SetActive(true);
-                    _unavailable.SetActive(false);
                     break;
                 case State.Completed:
                     _completed.SetActive(true);
-                    _loading.SetActive(false);
                     _loaded.SetActive(true);
-                    _unavailable.SetActive(false);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -69,17 +65,11 @@ namespace Code.UI.Slider
         public void SetTexture(Texture tex)
         {
             _image.texture = tex;
-            SetState(State.Loaded);
+            if (_state != State.Completed) SetState(State.Loaded);
         }
 
         public void SetName(string value) => _name.text = value;
         public void SetProgress(string value) => _progress.text = value;
-
-        public void SetCompleted(bool value)
-        {
-            if (value) _state = State.Completed;
-            UpdateState();
-        }
 
         protected void OnEnable()
         {
@@ -94,9 +84,11 @@ namespace Code.UI.Slider
         private void ClickProcess()
         {
             if (_state == State.Unavailable || _state == State.Loading) return;
+            var completed = _state == State.Completed;
+
+            OnSelectLevel?.Invoke(_id, completed);
 
             Debug.Log($"SliderButton.Click event itemId={_id}");
-            OnSelectLevel?.Invoke(_id);
         }
 
         public void SetState(State state)
