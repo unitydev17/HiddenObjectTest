@@ -20,6 +20,7 @@ public class GameLifetimeScope : LifetimeScope
         RegisterFactories(builder);
 
         builder.Register<GameData>(Lifetime.Singleton);
+        builder.Register<PlayerData>(Lifetime.Singleton);
     }
 
     private void RegisterFactories(IContainerBuilder builder)

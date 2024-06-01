@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Threading;
+using Code.SO;
 using Code.Utils;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -10,14 +11,19 @@ namespace Code.Services
 {
     public class RemoteContentService : IRemoteContentService
     {
-        private const int Timeout = 10;
+        private readonly Config _cfg;
+
+        public RemoteContentService(Config cfg)
+        {
+            _cfg = cfg;
+        }
 
         public async UniTask<RemoteConfig> LoadRemoteConfig(string url, CancellationToken cancellation)
         {
             if (url == null) throw new Exception(Constants.UrlEmpty);
 
             var request = UnityWebRequest.Get(url);
-            request.timeout = Timeout;
+            request.timeout = _cfg.timeout;
 
             var asyncOperation = await request.SendWebRequest().WithCancellation(cancellation);
             if (asyncOperation.result == UnityWebRequest.Result.Success)
@@ -45,15 +51,18 @@ namespace Code.Services
             // load remotely
 
             var request = UnityWebRequestTexture.GetTexture(url);
-            request.timeout = Timeout;
+            request.timeout = _cfg.timeout;
+
 
             var asyncOperation = await request.SendWebRequest().WithCancellation(cancellation);
             if (asyncOperation.result != UnityWebRequest.Result.Success) throw new Exception(request.error);
-            {
-                Debug.Log("RemoteContentService.LoadRemoteTexture(): downloaded texture");
-                CacheTexture(request, path);
-                return LoadFromCache(path);
-            }
+
+            Debug.Log("RemoteContentService.LoadRemoteTexture(): downloaded texture");
+
+            // cache texture
+
+            CacheTexture(request, path);
+            return LoadFromCache(path);
         }
 
         private static bool IsExistInCache(string cachePath)

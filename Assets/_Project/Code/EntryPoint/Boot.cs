@@ -2,16 +2,17 @@ using System;
 using System.Threading;
 using Code.Services;
 using Code.SO;
-using Code.UI;
 using Code.UI.Popups;
 using Code.Utils;
 using Cysharp.Threading.Tasks;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using VContainer.Unity;
 
 namespace Code.EntryPoint
 {
+    [UsedImplicitly]
     public class Boot : IAsyncStartable
     {
         private readonly IRemoteContentService _remoteContentService;

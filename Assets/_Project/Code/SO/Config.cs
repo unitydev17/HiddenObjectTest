@@ -6,6 +6,7 @@ namespace Code.SO
     public class Config  : ScriptableObject
     {
         public string configUrl;
+        public int timeout;
 
     }
 }

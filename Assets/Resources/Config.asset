@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: Config
   m_EditorClassIdentifier: 
   configUrl: https://unitydev17.github.io/test/levels.json
+  timeout: 10
