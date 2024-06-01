@@ -3,6 +3,7 @@ using Code.EntryPoint;
 using Code.Services;
 using Code.SO;
 using Code.UI.Popups;
+using Code.Utils;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -15,12 +16,18 @@ public class GameLifetimeScope : LifetimeScope
     protected override void Configure(IContainerBuilder builder)
     {
         RegisterEntryPoint(builder);
+        RegisterExitPoint(builder);
         RegisterScriptableObjects(builder);
         RegisterServices(builder);
         RegisterFactories(builder);
 
         builder.Register<GameData>(Lifetime.Singleton);
         builder.Register<PlayerData>(Lifetime.Singleton);
+    }
+
+    private void RegisterExitPoint(IContainerBuilder builder)
+    {
+        builder.RegisterComponentInHierarchy<PersistenceControl>();
     }
 
     private void RegisterFactories(IContainerBuilder builder)
@@ -31,6 +38,8 @@ public class GameLifetimeScope : LifetimeScope
     private static void RegisterServices(IContainerBuilder builder)
     {
         builder.Register<IRemoteContentService, RemoteContentService>(Lifetime.Scoped);
+        builder.Register<ICacheService, CacheService>(Lifetime.Scoped);
+        builder.Register<IPersistenceService, PersistenceService>(Lifetime.Scoped);
     }
 
     private void RegisterScriptableObjects(IContainerBuilder builder)

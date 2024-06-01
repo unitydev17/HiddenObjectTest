@@ -12,10 +12,12 @@ namespace Code.Services
     public class RemoteContentService : IRemoteContentService
     {
         private readonly Config _cfg;
+        private readonly ICacheService _cacheService;
 
-        public RemoteContentService(Config cfg)
+        public RemoteContentService(Config cfg, ICacheService cacheService)
         {
             _cfg = cfg;
+            _cacheService = cacheService;
         }
 
         public async UniTask<RemoteConfig> LoadRemoteConfig(string url, CancellationToken cancellation)
@@ -39,16 +41,12 @@ namespace Code.Services
         {
             if (url == null) throw new Exception(Constants.UrlEmpty);
 
-            // check for cached textures
-
             var path = Path.Combine(Application.persistentDataPath, Path.GetFileName(url));
-            if (IsExistInCache(path))
+            if (_cacheService.IsCached(path))
             {
                 Debug.Log("RemoteContentService.LoadRemoteTexture(): return cached texture");
-                return LoadFromCache(path);
+                return _cacheService.LoadFromCache(path);
             }
-
-            // load remotely
 
             var request = UnityWebRequestTexture.GetTexture(url);
             request.timeout = _cfg.timeout;
@@ -59,30 +57,9 @@ namespace Code.Services
 
             Debug.Log("RemoteContentService.LoadRemoteTexture(): downloaded texture");
 
-            // cache texture
 
-            CacheTexture(request, path);
-            return LoadFromCache(path);
-        }
-
-        private static bool IsExistInCache(string cachePath)
-        {
-            return File.Exists(cachePath);
-        }
-
-        private static Texture2D LoadFromCache(string cachePath)
-        {
-            var bytes = File.ReadAllBytes(cachePath);
-            var texture = new Texture2D(2, 2);
-            texture.LoadImage(bytes);
-            texture.Apply();
-            return texture;
-        }
-
-        private static void CacheTexture(UnityWebRequest request, string cachePath)
-        {
-            var bytes = request.downloadHandler.data;
-            File.WriteAllBytes(cachePath, bytes);
+            _cacheService.CacheTexture(request.downloadHandler.data, path);
+            return _cacheService.LoadFromCache(path);
         }
     }
 }
