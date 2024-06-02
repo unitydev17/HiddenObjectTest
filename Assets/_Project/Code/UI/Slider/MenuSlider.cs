@@ -4,6 +4,7 @@ using Code.Services;
 using Code.Utils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnlimitedScrollUI;
 using VContainer;
 
 namespace Code.UI.Slider
@@ -11,19 +12,22 @@ namespace Code.UI.Slider
     public class MenuSlider : MonoBehaviour
     {
         [SerializeField] private Transform _content;
+        [SerializeField] private GridUnlimitedScroller _unlimitedScroller;
 
         private SliderItemFactory _itemFactory;
         private ILevelService _levelService;
         private CancellationTokenSource _cts;
         private IProgressService _progressService;
+        private GameData _gameData;
 
 
         [Inject]
-        public void Construct(SliderItemFactory itemFactory, ILevelService levelService, IProgressService progressService)
+        public void Construct(SliderItemFactory itemFactory, ILevelService levelService, IProgressService progressService, GameData gameData)
         {
             _itemFactory = itemFactory;
             _levelService = levelService;
             _progressService = progressService;
+            _gameData = gameData;
         }
 
         private void OnEnable()
@@ -48,7 +52,7 @@ namespace Code.UI.Slider
             SceneManager.LoadScene(Constants.GamePlayScene);
         }
 
-        private void Start()
+        public void Run()
         {
             Debug.Log("MenuSlider.Start()");
 
@@ -57,12 +61,27 @@ namespace Code.UI.Slider
             CreateItems();
         }
 
+
+        private GameObject FetchPrefabById(int id)
+        {
+            var level = _levelService.GetLevels().First(l => l.id == id);
+            return _itemFactory.Create(level, _cts.Token).gameObject;
+        }
+
         private void CreateItems()
         {
-            foreach (var item in _levelService.GetLevels().Select(level => _itemFactory.Create(level, _cts.Token)))
+            _unlimitedScroller.SetFetcher(FetchPrefabById);
+            _unlimitedScroller.Generate(null, _gameData.remoteConfig.levels.Count, (index, iCell) =>
             {
-                item.transform.SetParent(_content, false);
-            }
+                var regularCell = iCell as RegularCell;
+                if (regularCell != null) regularCell.onGenerated?.Invoke(index);
+            });
+
+
+            // foreach (var item in _levelService.GetLevels().Select(level => _itemFactory.Create(level, _cts.Token)))
+            // {
+            //     item.transform.SetParent(_content, false);
+            // }
         }
     }
 }

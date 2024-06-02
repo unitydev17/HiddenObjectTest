@@ -165,10 +165,10 @@ GameObject:
   - component: {fileID: 3811113914968458400}
   - component: {fileID: 56056784454067523}
   - component: {fileID: 1506509543554157182}
-  - component: {fileID: 5637403583857834569}
-  - component: {fileID: 6852271690211590567}
+  - component: {fileID: 1351551734933320077}
+  - component: {fileID: -4767630852056650913}
   m_Layer: 5
-  m_Name: Item
+  m_Name: ItemTest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -295,7 +295,7 @@ MonoBehaviour:
   _completed: {fileID: 7763798700737989466}
   _unavailable: {fileID: 8046957803501116899}
   _loading: {fileID: 812751758052215480}
---- !u!225 &5637403583857834569
+--- !u!225 &1351551734933320077
 CanvasGroup:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -307,7 +307,7 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &6852271690211590567
+--- !u!114 &-4767630852056650913
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
