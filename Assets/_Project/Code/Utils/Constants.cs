@@ -2,6 +2,7 @@ namespace Code.Utils
 {
     public static class Constants
     {
+        public const string Completed = "Completed!";
         public const string MenuScene = "Menu";
         public const string GamePlayScene = "GamePlay";
 

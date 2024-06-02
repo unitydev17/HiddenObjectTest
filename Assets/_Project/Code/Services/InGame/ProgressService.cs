@@ -32,5 +32,10 @@ namespace Code.Services
         {
             _playerService.ResetProgress(level.id);
         }
+
+        public bool IsCompleted(Level level)
+        {
+            return GetProgress(level).Item2;
+        }
     }
 }

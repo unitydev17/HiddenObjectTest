@@ -26,6 +26,7 @@ public class GamePlay : MonoBehaviour, IPointerClickHandler, IInitializable, IDi
 
     private CancellationTokenSource _cts;
     private Level _level;
+    private bool _leftScreen;
 
 
     [Inject]
@@ -38,6 +39,7 @@ public class GamePlay : MonoBehaviour, IPointerClickHandler, IInitializable, IDi
 
     public void Initialize()
     {
+        _leftScreen = false;
         _level = _levelService.GetCurrLevel();
 
         var (progress, completed) = _progressService.GetProgress(_level);
@@ -69,25 +71,37 @@ public class GamePlay : MonoBehaviour, IPointerClickHandler, IInitializable, IDi
         _backButton.onClick.RemoveAllListeners();
     }
 
-    private static void ClickBackProcess()
+    private void ClickBackProcess()
     {
+        _leftScreen = true;
         SceneManager.LoadScene(Constants.MenuScene);
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
         _bounce.Run(eventData.position);
+        if (_progressService.IsCompleted(_level)) return;
 
         _progressService.IncreaseCounter(_level);
 
         var (progress, completed) = _progressService.GetProgress(_level);
         UpdateView(progress, completed);
 
-        if (completed) ClickBackProcess();
+        if (completed)
+        {
+            UniTask.Delay(1500).ContinueWith(() =>
+            {
+                if (!_leftScreen)
+                {
+                    _leftScreen = true;
+                    ClickBackProcess();
+                }
+            });
+        }
     }
 
     private void UpdateView(int progress, bool completed)
     {
-        _progress.text = completed ? string.Empty : string.Format(Constants.Progress, progress);
+        _progress.text = completed ? Constants.Completed : string.Format(Constants.Progress, progress);
     }
 }

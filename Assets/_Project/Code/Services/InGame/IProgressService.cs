@@ -5,5 +5,6 @@ namespace Code.Services
         public void IncreaseCounter(Level level);
         public (int, bool) GetProgress(Level level);
         public void ResetProgress(Level level);
+        public bool IsCompleted(Level level);
     }
 }

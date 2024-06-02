@@ -4,6 +4,7 @@ using System.Threading;
 using Code.SO;
 using Code.Utils;
 using Cysharp.Threading.Tasks;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -30,7 +31,7 @@ namespace Code.Services
             var asyncOperation = await request.SendWebRequest().WithCancellation(cancellation);
             if (asyncOperation.result == UnityWebRequest.Result.Success)
             {
-                return JsonUtility.FromJson<RemoteConfig>(request.downloadHandler.text);
+                return JsonConvert.DeserializeObject<RemoteConfig>(request.downloadHandler.text);
             }
 
             throw new Exception(request.error);

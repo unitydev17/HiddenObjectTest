@@ -14,6 +14,11 @@ namespace Code.Utils
             _persistenceService = persistenceService;
         }
 
+        private void Awake()
+        {
+            Application.targetFrameRate = 60;
+        }
+
         private void OnApplicationFocus(bool hasFocus)
         {
             if (!hasFocus) _persistenceService.SavePlayerData();
