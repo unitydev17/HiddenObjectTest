@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Threading;
 using Code.Services;
 using Code.Utils;
@@ -19,15 +18,17 @@ namespace Code.UI.Slider
         private CancellationTokenSource _cts;
         private IProgressService _progressService;
         private GameData _gameData;
+        private IPlayerService _playerService;
 
 
         [Inject]
-        public void Construct(SliderItemFactory itemFactory, ILevelService levelService, IProgressService progressService, GameData gameData)
+        public void Construct(SliderItemFactory itemFactory, ILevelService levelService, IProgressService progressService, GameData gameData, IPlayerService playerService)
         {
             _itemFactory = itemFactory;
             _levelService = levelService;
             _progressService = progressService;
             _gameData = gameData;
+            _playerService = playerService;
         }
 
         private void OnEnable()
@@ -52,25 +53,28 @@ namespace Code.UI.Slider
             SceneManager.LoadScene(Constants.GamePlayScene);
         }
 
-        public void Run()
+        public void Start()
         {
             Debug.Log("MenuSlider.Start()");
 
             _content.gameObject.ClearChildren();
             _cts = new CancellationTokenSource();
             CreateItems();
+
+            var levelId = (uint)_playerService.GetLevelId();
+            _unlimitedScroller.JumpTo(levelId, JumpToMethod.Center);
         }
 
 
-        private GameObject FetchPrefabById(int id)
+        private GameObject FetchPrefabByIndex(int index)
         {
-            var level = _levelService.GetLevels().First(l => l.id == id);
+            var level = _levelService.GetLevels()[index];
             return _itemFactory.Create(level, _cts.Token).gameObject;
         }
 
         private void CreateItems()
         {
-            _unlimitedScroller.SetFetcher(FetchPrefabById);
+            _unlimitedScroller.SetFetcher(FetchPrefabByIndex);
             _unlimitedScroller.Generate(null, _gameData.remoteConfig.levels.Count, (index, iCell) =>
             {
                 var regularCell = iCell as RegularCell;

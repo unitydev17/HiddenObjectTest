@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace Code
@@ -7,6 +6,6 @@ namespace Code
     {
         public Dictionary<int, int> levelStates = new Dictionary<int, int>();
 
-        [NonSerialized] public int levelId;
+        public int levelId;
     }
 }

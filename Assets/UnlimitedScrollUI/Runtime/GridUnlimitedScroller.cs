@@ -347,7 +347,7 @@ namespace UnlimitedScrollUI {
                 instance.transform.SetParent(contentTrans, false);
                 
                 // instance = Instantiate(cellPrefab, contentTrans);
-                instance.name = cellPrefab.name + "_" + index;
+                instance.name = instance.name + "_" + index;
                 
                 iCell = instance.GetComponent<ICell>();
                 onCellGenerate?.Invoke(index, iCell);

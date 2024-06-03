@@ -24,7 +24,7 @@ namespace Code.Services
             _playerService.SetLevelId(id);
         }
 
-        public IEnumerable<Level> GetLevels()
+        public List<Level> GetLevels()
         {
             return _gameData.remoteConfig.levels;
         }

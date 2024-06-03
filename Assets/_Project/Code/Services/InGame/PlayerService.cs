@@ -54,6 +54,7 @@ namespace Code.Services
         public void SetPlayerData(PlayerData data)
         {
             _playerData.levelStates = data.levelStates;
+            _playerData.levelId = data.levelId;
         }
     }
 }

@@ -7,6 +7,6 @@ namespace Code.Services
         public Level GetCurrLevel();
         public void SetCurrentLevel(int id);
 
-        public IEnumerable<Level> GetLevels();
+        public List<Level> GetLevels();
     }
 }
